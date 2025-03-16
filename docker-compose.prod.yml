@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  polytech-smart-greenhouse-postgres:
+    image: postgres:16-bookworm
+    platform: linux/arm64
+    environment:
+      POSTGRES_DB: "polytech-smart-house"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - polytech-smart-greenhouse-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d polytech-smart-house"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  polytech-smart-greenhouse-mosquitto:
+    image: eclipse-mosquitto:2.0.18
+    platform: linux/arm64
+    ports:
+      - "1883:1883"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+    networks:
+      - polytech-smart-greenhouse-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1883"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  polytech-smart-greenhouse-app:
+    image: ${DOCKERHUB_IMAGE:vyach12/smart-greenhouse-arm}:latest
+    platform: linux/arm64
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      polytech-smart-greenhouse-postgres:
+        condition: service_healthy
+      polytech-smart-greenhouse-mosquitto:
+        condition: service_healthy
+    networks:
+      - polytech-smart-greenhouse-net
+
+volumes:
+  postgres_data:
+  mosquitto_data:
+
+networks:
+  polytech-smart-greenhouse-net:
