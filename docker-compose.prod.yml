@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   polytech-smart-greenhouse-postgres:
     image: postgres:16-bookworm
+    container_name: polytech-smart-greenhouse-postgres
     platform: linux/arm64
     environment:
       POSTGRES_DB: "polytech-smart-house"
@@ -20,11 +19,14 @@ services:
 
   polytech-smart-greenhouse-mosquitto:
     image: eclipse-mosquitto:2.0.18
+    container_name: polytech-smart-greenhouse-mosquitto
     platform: linux/arm64
     ports:
       - "1883:1883"
+      - "9001:9001"
     volumes:
       - mosquitto_data:/mosquitto/data
+      - ./mosquitto/config:/mosquitto/config
     networks:
       - polytech-smart-greenhouse-net
     healthcheck:
@@ -34,7 +36,8 @@ services:
       retries: 5
 
   polytech-smart-greenhouse-app:
-    image: ${DOCKERHUB_IMAGE:vyach12/smart-greenhouse-arm}:latest
+    image: vyach12/smart-greenhouse-arm:latest
+    container_name: polytech-smart-greenhouse-app
     platform: linux/arm64
     environment:
       - SPRING_PROFILES_ACTIVE=prod
