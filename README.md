@@ -21,7 +21,6 @@
    Необходимые переменные среды для запуска скрипта, в случае отсутствия будут взяты значения по-умолчанию
    ```bash
     export DOCKERHUB_IMAGE="your-custom-image" # Образ приложения
-    export POSTGRES_PASSWORD="new-password"    # Пароль БД
     ```
 
 ## Управление
