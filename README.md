@@ -18,15 +18,13 @@
     ```bash
     ./deploy.sh
     ```
-   Необходимые переменные среды для запуска скрипта, в случае отсутствия будут взяты значения по-умолчанию
-   ```bash
-    export DOCKERHUB_IMAGE="your-custom-image" # Образ приложения
-    ```
 
 ## Управление
 ### Просмотр логов
 ```bash
-docker compose logs -f polytech-smart-greenhouse-app
+docker compose logs polytech-smart-greenhouse-app
+docker compose logs polytech-smart-greenhouse-mosquitto
+docker compose logs polytech-smart-greenhouse-postgres
 ```
 ### Остановка
 ```bash
