@@ -20,12 +20,6 @@ if ! docker compose version &> /dev/null; then
     error_exit "Docker Compose не установлен. Установите Docker Compose Plugin."
 fi
 
-# Получение версии из pom.xml (если не указана через TAG)
-if [ -z "${TAG}" ]; then
-    APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    export TAG=${APP_VERSION}
-fi
-
 # Запуск системы
 echo -e "${GREEN}Запуск инфраструктуры...${NC}"
 docker compose -f docker-compose.prod.yml pull
